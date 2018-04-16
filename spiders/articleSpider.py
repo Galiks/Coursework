@@ -8,16 +8,11 @@ class ArcadySpider(CrawlSpider):
     name = "arcady"
 
     def start_requests(self):
-        start_urls = ["https://en.wikipedia.org/wiki/Python_(programming_language)",
-                      "https://en.wikipedia.org/wiki/Renaissance_Cleveland_Hotel",
-                      "https://en.wikipedia.org/wiki/2018_NCAA_Division_I_Men%27s_Basketball_Tournament"]
+        start_urls = ["https://en.wikipedia.org/wiki/Python_(programming_language)"]
         for url in start_urls:
-            yield scrapy.Request(url=url, callback=self.parse)
-
+            yield Request(url=url, callback=self.parse)
 
     def parse(self, response):
         item = ArcadyItem()
-        title = response.xpath('//h1/text()')[0].extract()
-        print("Title is: " + title)
-        item['title'] = title
-        return item
+        for h2 in response.xpath('//body//span[@class="mw-headline"]//text()').extract():
+            yield {"h2": h2}
