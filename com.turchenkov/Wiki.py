@@ -1,15 +1,13 @@
 import csv
 import re
+from multiprocessing import Pool
 from time import time
 
-from pip._vendor import requests
 from bs4 import BeautifulSoup
+from pip._vendor import requests
 
 
 class Wiki:
-
-
-
     exceprion_list = [
         'https://ru.wikipedia.org/wiki/%D0%A4%D0%B0%D1%82%D1%83%D0%BB%D0%BB%D0%B0%D0%B5%D0%B2,_%D0%A4%D0%B0%D1%82%D1%83%D0%BB%D0%BB%D0%B0_%D0%93%D0%B0%D0%BD%D0%B8_%D0%BE%D0%B3%D0%BB%D1%8B',
         'https://ru.wikipedia.org/wiki/%D0%A4%D0%B8%D1%88%D0%B0%D1%85_(%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F)']
@@ -161,25 +159,33 @@ class Wiki:
                     print(name)
                     self.give_date(birthday, name)
 
+    def make_link(self, url):
+        link = self.get_All_Links_On_Page(self.get_Html(url))
+        for i in link:
+            self.make_data(i)
+
+    def make_data(self, url):
+        html = self.get_Html(url)
+        self.get_Page_Data(html)
+
     def main(self):
         url = 'https://ru.wikipedia.org/wiki/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%92%D1%81%D0%B5_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D1%8B/%D0%A4'
-        wiki_pages = []
-        wiki_pages.append(url)
-        self.get_All_Links_On_Wiki(self.get_Html(url), wiki_pages)
-        for pages in wiki_pages:
-            link = self.get_All_Links_On_Page(self.get_Html(pages))
-            for i in link:
-                html = self.get_Html(i)
-                self.get_Page_Data(html)
+        my_wiki_pages = []
+        my_wiki_pages.append(url)
+        self.get_All_Links_On_Wiki(self.get_Html(url), my_wiki_pages)
+
+        with Pool(4) as first:
+            first.map(self.make_link, my_wiki_pages)
 
 
 # main
-wiki = Wiki()
-start_time = time()
-wiki.main()
-print("Program's end")
-end_time = time()
-time_program = end_time - start_time
-file = open("Program's time.txt", 'w')
-file.write(str(time_program))
-file.close()
+if __name__ == '__main__':
+    wiki = Wiki()
+    start_time = time()
+    wiki.main()
+    print("Program's end")
+    end_time = time()
+    time_program = end_time - start_time
+    file = open("Program's time.txt", 'w')
+    file.write(str(time_program))
+    file.close()
