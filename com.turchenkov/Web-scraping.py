@@ -217,5 +217,5 @@ class Wiki:
 
 
 #main
-wiki = Wiki()
-wiki.main()
+# wiki = Wiki()
+# wiki.main()
