@@ -1,10 +1,5 @@
 .idea
 venv
 venv1
-com.turchenkov/wiki16.csv
-com.turchenkov/wiki15.csv
-com.turchenkov/wiki17.csv
-com.turchenkov/wiki18.csv
-com.turchenkov/wiki19.csv
-com.turchenkov/wiki20.csv
-com.turchenkov/wikiElse.csv
+com.turchenkov/Data
+Error timeout.txt
